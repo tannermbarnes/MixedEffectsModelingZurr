@@ -24,3 +24,17 @@ lines(Depth16[I1], m2$fit[I1] + 2 * m2$se.fit[I1], lty = 2)
 lines(Depth16[I1], m2$fit[I1] - 2 * m2$se.fit[I1], lty = 2)
 par(op)
 
+detach("package:gam")
+library(mgcv)
+op <- par(mfrow = c(2, 2), mar = c(5, 4, 1, 2))
+Sources16 <- ISIT$Sources[ISIT$Station == 16]
+Depth16 <- ISIT$SampleDepth[ISIT$Station == 16]
+plot(Depth16, Sources16, type = "p")
+m3 <- gam(Sources16 ~ s(Depth16, fx = FALSE, k = -1), bs = "cr")
+plot(m3, se = TRUE)
+m3pred <- predict(m3, se = TRUE, type = "response")
+plot(Depth16, Sources16, type = "p")
+I1 <- order(Depth16)
+lines(Depth16[I1], m3pred$fit[I1], lty = 1)
+lines(Depth16[I1], m3pred$fit[I1] + 2 * m3pred$se.fit[I1], lty = 2)
+lines(Depth16[I1], m3pred$fit[I1] - 2 * m3pred$se.fit[I1], lty = 2)
